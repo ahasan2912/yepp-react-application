@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import "tailwindcss";
+
+:root {
+  --primary-color: #4CAF50;
+  --secondary-color: #79be7b;
+}
+
+.bg-primary {
+  background-color: var(--primary-color);
+}
+
+.bg-secondary {
+  background-color: var(--secondary-color);
+}
+
+.hover\:bg-secondary:hover {
+  background-color: var(--secondary-color);
+}
+
+.text-primary {
+  color: var(--primary-color);
+}
+
+.text-secondary {
+  color: var(--secondary-color);
+}
+
+.hover\:text-secondary:hover {
+  color: var(--secondary-color);
+}
+
+.group:hover .group-hover\:text-secondary {
+  color: var(--secondary-color);
+}
+
+.fill-primary {
+  fill: var(--primary-color);
+}
+
+:where(input, textarea, select):focus,
+:where(input, textarea, select):focus-visible {
+  border-color: var(--primary-color) !important;
+  --tw-ring-color: color-mix(in srgb, var(--primary-color) 35%, transparent) !important;
+}
+
+.focus\:border-primary:focus {
+  border-color: var(--primary-color);
+}
+
+.focus-within\:border-primary:focus-within {
+  border-color: var(--primary-color);
+}
+
+.focus\:ring-primary:focus {
+  --tw-ring-color: var(--primary-color);
+}
+
+.focus\:ring-primary\/20:focus {
+  --tw-ring-color: color-mix(in srgb, var(--primary-color) 20%, transparent);
+}
+
+.focus\:ring-primary\/25:focus {
+  --tw-ring-color: color-mix(in srgb, var(--primary-color) 25%, transparent);
+}
+
+body {
+  font-family: "Manrope", sans-serif;
+}
+
+.poppins {
+  font-family: "Poppins", sans-serif;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.bg-image {
+  background-image: url('../src/assets/images/banner.jpg');
+  background-position: 30% 70%;
+}
+
+.forget-bg-image {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 100% 25%;
+}
+
+.skeleton-item {
+  background-color: #e0e0e0;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-text {
+  background-color: #e0e0e0;
+  animation: pulse 1.5s infinite ease-in-out;
+  border-radius: 4px;
+}
+
+/* Pulse animation for skeleton */
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.7;
+  }
+}

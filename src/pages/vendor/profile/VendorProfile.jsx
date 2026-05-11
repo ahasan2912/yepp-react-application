@@ -17,9 +17,6 @@ const VendorProfile = () => {
         .split(" ")
         .map(word => word[0])
         .join("");
-
-
-    console.log(currentVendor?.data);
     return (
         <div className="bg-white min-h-[70vh] px-4 pt-32 pb-12">
             <div className="max-w-305 mx-auto space-y-6">

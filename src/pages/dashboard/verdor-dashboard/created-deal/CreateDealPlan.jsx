@@ -8,6 +8,11 @@ import useUserLocation from "../../../../hooks/useUserLocation";
 import { useGetCouponCodeQuery } from "../../../../features/coupon/couponApi";
 import { useHandlePaymentMutation } from "../../../../features/payment/paymentApi";
 
+const toSafeNumber = (value, fallback = 0) => {
+    const numberValue = Number(value);
+    return Number.isFinite(numberValue) ? numberValue : fallback;
+};
+
 const CreateDealPlan = () => {
     const [code, setCode] = useState('');
     const { id } = useParams();
@@ -44,24 +49,26 @@ const CreateDealPlan = () => {
     }
 
     const handleApplyCoupon = () => {
-        setCode(formData?.voucherCode);
+        setCode(formData?.voucherCode?.trim() || "");
     };
 
     const selectPromotedPaln = plans?.data.find((plan) => plan._id === formData?.plan);
     const { _id, title, category } = dealDetails?.data || {};
 
-    const discountPrice = ((selectPromotedPaln?.price * couponCode?.data?.discount_parentage) / 100);
-    const finalPrice = selectPromotedPaln?.price - discountPrice;
-
-    console.log(selectPromotedPaln)
-
+    const planPrice = toSafeNumber(selectPromotedPaln?.price);
+    const discountPercentage = toSafeNumber(
+        couponCode?.data?.discount_parentage
+        ?? couponCode?.data?.discount_percentage
+        ?? couponCode?.data?.voucher_discount
+    );
+    const discountPrice = (planPrice * discountPercentage) / 100;
+    const finalPrice = planPrice - discountPrice;
     const onSubmit = async () => {
         const finalData = {
             planId: selectedPlan,
             dealId: id,
             voucher: code,
         };
-        console.log(finalData);
         const res = await handlePayment(finalData);
         window.location.href = res?.data?.data?.checkout_url;
 
@@ -129,7 +136,7 @@ const CreateDealPlan = () => {
                                                     </div>
                                                 </div>
                                                 <span className={`text-xl font-extrabold whitespace-nowrap relative z-1 ${isActive ? 'text-primary' : 'text-[#0f1f2e]'}`}>
-                                                    ${plan?.price}
+                                                    ${plan?.price.toFixed(2)}
                                                 </span>
                                             </div>
                                         );
@@ -160,15 +167,15 @@ const CreateDealPlan = () => {
                                     <div className="flex items-baseline justify-between gap-3 py-2.5 border-t border-[#edf7ee]">
                                         <span className="text-sm text-[#6e8f70] font-medium whitespace-nowrap">Plan Price</span>
                                         <span className="text-sm font-semibold text-[#0f1f2e] text-right wrap-break-word">
-                                            ${(selectPromotedPaln?.price ?? 0).toFixed(2)}
+                                            ${planPrice.toFixed(2)}
                                         </span>
                                     </div>
                                     <div className="flex items-baseline justify-between gap-3 py-2.5 border-t border-[#edf7ee]">
                                         <span className="text-sm text-[#6e8f70] font-medium whitespace-nowrap">Discount</span>
                                         <span className="text-sm font-semibold text-[#0f1f2e] text-right wrap-break-word">
-                                            {discountPrice
+                                            {discountPrice > 0
                                                 ? <span>${discountPrice.toFixed(2)}</span>
-                                                : "0$"
+                                                : "$0"
                                             }
                                         </span>
                                     </div>
@@ -178,7 +185,7 @@ const CreateDealPlan = () => {
                                             Total
                                         </span>
                                         <span className="text-[22px] font-extrabold text-primary">
-                                            ${finalPrice || selectPromotedPaln?.price || 0}
+                                            ${finalPrice.toFixed(2)}
                                         </span>
                                     </div>
                                 </div>

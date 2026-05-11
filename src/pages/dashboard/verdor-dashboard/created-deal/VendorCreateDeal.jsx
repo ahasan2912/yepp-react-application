@@ -19,6 +19,7 @@ const hasCouponCodeValue = (data) => {
 };
 
 const VendorCreateDeal = () => {
+    const [paymentId, setPaymentId] = useState(null);
     const [openDropdown, setOpenDropdown] = useState(false);
     const [activeField, setActiveField] = useState(null);
     const [imageFiles, setImagesFiles] = useState([]);
@@ -78,14 +79,14 @@ const VendorCreateDeal = () => {
     useEffect(() => {
         if (isSuccess) {
             toast.success("Deal created successfully!");
-            navigate("/my-deals");
+            navigate(`/create-deal-plan/${paymentId}`);
         }
         if (error) {
             const message = error?.data?.message || "Deal created failed!";
             toast.error(message);
         }
 
-    }, [navigate, isSuccess, error,]);
+    }, [navigate, isSuccess, error, paymentId]);
 
     const isFinalPriceOnly = Boolean(watchFinalPriceOnly);
     const calculatedPricing = getDealPricing(watchRegularPrice, watchDiscount);
@@ -146,7 +147,7 @@ const VendorCreateDeal = () => {
         return false;
     };
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         const isImagesValid = validateImages();
         const isCouponCodesValid = validateCouponCodes(data);
 
@@ -194,8 +195,8 @@ const VendorCreateDeal = () => {
         if (upcCodeFile) {
             formData.append("upc", upcCodeFile);
         }
-
-        createNewDeal(formData);
+        const res = await createNewDeal(formData);
+        setPaymentId(res?.data?.data?._id);
     };
 
     const onInvalid = () => {
@@ -229,16 +230,73 @@ const VendorCreateDeal = () => {
 
                 <form onSubmit={handleSubmit(onSubmit, onInvalid)} autoComplete="off" className="space-y-6">
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
-                        <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-                            <UplodedImage
-                                setImagesFiles={setImagesFiles}
-                                setValue={setValue}
-                                imageError={imageError}
-                                setImageError={setImageError}
-                                className="w-full"
-                            />
-                        </div>
+                        <div className="space-y-5 rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                            <h2 className="text-xl font-bold text-primary">Deal Info</h2>
 
+                            {/* Title */}
+                            <div>
+                                <label className="block text-base text-[#262626] font-medium mb-2">
+                                    Deal Title<span className="text-red-500">*</span>
+                                </label>
+
+                                <input
+                                    {...register("title", {
+                                        required: "Deal title is required",
+                                        validate: (value) =>
+                                            value.trim().length >= 5 || "Title must be minimum 5 characters",
+                                    })}
+                                    placeholder="Enter Title"
+                                    className={`w-full rounded-full border bg-white px-6 py-4 text-[#262626] outline-none transition-all focus:ring-4 focus:ring-primary/10 ${errors.title ? "border-red-500 focus:border-red-500 focus:ring-red-100" : "border-slate-300 focus:border-primary"}`}
+                                />
+
+                                {errors.title && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+                                )}
+                            </div>
+
+                            {/* Highlights */}
+                            <Highlights setValue={setValue} />
+
+                            {/* tags */}
+                            <Tags
+                                setValue={setValue}
+                            />
+                            {/* outlets */}
+                            <div>
+                                <label className="block text-base text-[#262626] font-medium mb-2">
+                                    Available Location
+                                </label>
+
+                                <div className="flex flex-wrap gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4">
+                                    {shopDetails?.data?.outlets?.map((out) => (
+                                        <label
+                                            key={out._id}
+                                            className="flex h-10 cursor-pointer items-center gap-2 rounded-full border border-slate-300 bg-white px-4 text-sm font-medium text-[#525252] transition-all hover:border-primary hover:bg-primary/5"
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                value={out._id}
+                                                {...register("outlets", {
+                                                    required: "Select at least one outlet",
+                                                })}
+                                                className="h-4 w-4 accent-primary"
+                                            />
+
+                                            <span className="flex items-center gap-1">
+                                                <MapPin size={16} className="text-primary" />
+                                                {out?.outlet_name || "Location Name"}
+                                            </span>
+                                        </label>
+                                    ))}
+                                </div>
+
+                                {errors.outlets && (
+                                    <p className="text-red-500 text-sm">
+                                        {errors.outlets.message}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
                         <div className="space-y-5 rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
                             <h2 className="text-xl font-bold text-primary">Deal Pricing</h2>
                             {/* Regular Price */}
@@ -320,21 +378,21 @@ const VendorCreateDeal = () => {
                             {/* Final Price */}
                             <div>
                                 <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                                <input
-                                    type="checkbox"
-                                    {...register("finalPriceOnly")}
-                                    className="mt-1 h-4 w-4 accent-primary"
-                                />
+                                    <input
+                                        type="checkbox"
+                                        {...register("finalPriceOnly")}
+                                        className="mt-1 h-4 w-4 accent-primary"
+                                    />
 
-                                <div className="space-y-1">
-                                    <span className="block text-sm font-semibold text-[#262626]">
-                                        Final Price Only
-                                    </span>
-                                    <p className="text-sm leading-6 text-slate-500">
-                                        Let the customer see a single final price and skip the regular price plus discount breakdown.
-                                    </p>
-                                </div>
-                            </label>
+                                    <div className="space-y-1">
+                                        <span className="block text-sm font-semibold text-[#262626]">
+                                            Final Price Only
+                                        </span>
+                                        <p className="text-sm leading-6 text-slate-500">
+                                            Let the customer see a single final price and skip the regular price plus discount breakdown.
+                                        </p>
+                                    </div>
+                                </label>
                                 <label className="block text-base text-[#262626] font-medium my-2">
                                     {isFinalPriceOnly ? (
                                         <>
@@ -394,74 +452,16 @@ const VendorCreateDeal = () => {
                                 )}
                             </div>
                         </div>
-
-                        <div className="space-y-5 rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-                            <h2 className="text-xl font-bold text-primary">Deal Info</h2>
-
-                            {/* Title */}
-                            <div>
-                                <label className="block text-base text-[#262626] font-medium mb-2">
-                                    Deal Title<span className="text-red-500">*</span>
-                                </label>
-
-                                <input
-                                    {...register("title", {
-                                        required: "Deal title is required",
-                                        validate: (value) =>
-                                            value.trim().length >= 5 || "Title must be minimum 5 characters",
-                                    })}
-                                    placeholder="Enter Title"
-                                    className={`w-full rounded-full border bg-white px-6 py-4 text-[#262626] outline-none transition-all focus:ring-4 focus:ring-primary/10 ${errors.title ? "border-red-500 focus:border-red-500 focus:ring-red-100" : "border-slate-300 focus:border-primary"}`}
-                                />
-
-                                {errors.title && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
-                                )}
-                            </div>
-
-                            {/* Highlights */}
-                            <Highlights setValue={setValue} />
-
-                            {/* tags */}
-                            <Tags
+                        <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                            <UplodedImage
+                                setImagesFiles={setImagesFiles}
                                 setValue={setValue}
+                                imageError={imageError}
+                                setImageError={setImageError}
+                                className="w-full"
                             />
-                            {/* outlets */}
-                            <div>
-                                <label className="block text-base text-[#262626] font-medium mb-2">
-                                    Available Location
-                                </label>
-
-                                <div className="flex flex-wrap gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4">
-                                    {shopDetails?.data?.outlets?.map((out) => (
-                                        <label
-                                            key={out._id}
-                                            className="flex h-10 cursor-pointer items-center gap-2 rounded-full border border-slate-300 bg-white px-4 text-sm font-medium text-[#525252] transition-all hover:border-primary hover:bg-primary/5"
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                value={out._id}
-                                                {...register("outlets", {
-                                                    required: "Select at least one outlet",
-                                                })}
-                                                className="h-4 w-4 accent-primary"
-                                            />
-
-                                            <span className="flex items-center gap-1">
-                                                <MapPin size={16} className="text-primary" />
-                                                {out?.outlet_name || "Location Name"}
-                                            </span>
-                                        </label>
-                                    ))}
-                                </div>
-
-                                {errors.outlets && (
-                                    <p className="text-red-500 text-sm">
-                                        {errors.outlets.message}
-                                    </p>
-                                )}
-                            </div>
                         </div>
+
                         <div className="space-y-5 rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
                             <h2 className="text-xl font-bold text-primary">Deal Details</h2>
                             {/* Deal Category */}

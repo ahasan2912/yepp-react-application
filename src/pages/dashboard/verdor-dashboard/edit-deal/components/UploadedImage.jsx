@@ -49,7 +49,7 @@ const UploadedImage = ({ setImagesFiles }) => {
   };
 
   // not used this file
-  console.log(files);
+  // console.log(files);
 
   return (
     <div className="w-full md:w-1/2">

@@ -37,8 +37,6 @@ const PaymentHistory = () => {
     if (isLoading) {
         return <PaymentSkeleton />
     }
-    console.log(allPaymentList);
-
     const totalPages = Math.ceil(allPaymentList?.data?.meta?.total / limit);
     return (
         <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-8">

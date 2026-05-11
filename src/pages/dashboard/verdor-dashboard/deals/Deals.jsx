@@ -95,9 +95,6 @@ const Deals = () => {
     if (isLoading) {
         return <DealCardSkeleton />;
     }
-
-    console.log(myDeals);
-
     return (
         <div className="bg-white min-h-screen px-4 pt-32 pb-12">
             <div className="max-w-305 mx-auto">

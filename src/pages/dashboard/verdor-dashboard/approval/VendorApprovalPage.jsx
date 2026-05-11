@@ -100,7 +100,6 @@ const VendorApprovalPage = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state?.auth);
   const { data: shopDetails, isLoading } = useGetVendorDetailsQuery(user?._id);
-  console.log(shopDetails?.data?.shop_approval);
 
   if (isLoading) {
     return <ApprovalSkeleton />;

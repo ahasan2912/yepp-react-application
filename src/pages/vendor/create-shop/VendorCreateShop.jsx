@@ -8,11 +8,10 @@ import toast from "react-hot-toast";
 import { useCreateShopMutation } from "../../../features/shop/shopApi";
 import OutletModal from "./components/OutletModal";
 import { useHandleCurrentLoggedInUserQuery } from "../../../features/auth/authApi";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { userLoggedIn } from "../../../features/auth/authSlice";
 
 const VendorCreateShop = () => {
-  const { user } = useSelector((state) => state?.auth);
   const [logoPreview, setLogoPreview] = useState(null);
   const [outlets, setOutlets] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -128,10 +127,6 @@ const VendorCreateShop = () => {
       // console.log("");
     }
   };
-
-
-  console.log(currentUser);
-  console.log(user);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] px-4 pt-32 pb-12">

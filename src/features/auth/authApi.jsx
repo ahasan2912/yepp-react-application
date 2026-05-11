@@ -43,7 +43,7 @@ export const authApi = apiSlice.injectEndpoints({
         try {
           const result = await queryFulfilled;
           const tokens = result?.data?.data;
-          console.log(tokens);
+          // console.log(tokens);
           if (tokens) {
             await saveTokensAndFetchUser(tokens, dispatch);
           }

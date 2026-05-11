@@ -16,7 +16,7 @@ const Redeem = () => {
                 </div>
             </div>
             <div className="max-w-32.5 mx-auto text-center space-y-2 mt-6">
-                <h1 className='text-base font-bold text-[#0369A1]'>3. Enjoy with Saving</h1>
+                <h1 className='text-base font-bold text-[#0369A1]'>3. Enjoy with Savings</h1>
                 <div className="flex items-center justify-center">
                     <img className='w-35 object-cover' src={images.treatmentImage} alt="dealImage" />
                 </div>

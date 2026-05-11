@@ -11,10 +11,10 @@ import InitialPageLoader from './components/skeleton/InitialPageLoader.jsx'
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/firebase-messaging-sw.js')
     .then(function (registration) {
-      console.log("Service Worker registered with scope:", registration.scope);
+      // console.log("Service Worker registered with scope:", registration.scope);
     })
     .catch(function (err) {
-      console.error("Service Worker registration failed:", err);
+      // console.error("Service Worker registration failed:", err);
     });
 }
 

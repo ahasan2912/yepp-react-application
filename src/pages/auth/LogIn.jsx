@@ -68,7 +68,7 @@ const LogIn = () => {
         try {
             const res = await handleLogin(data).unwrap();
             if (res?.data) {
-                toast.success("Login successful!");
+                // toast.success("Login successful!");
             }
         } catch (error) {
             const message = error?.data?.message || "Login failed!";

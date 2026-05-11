@@ -11,7 +11,7 @@ const Header = ({
     return (
         <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h1 className="font-bold text-primary text-lg">Payment List</h1>
+                <h1 className="font-bold text-primary text-lg">Ad History</h1>
                 <p className="text-sm text-[#737373] font-medium">
                     Search, filter and manage all payment
                 </p>

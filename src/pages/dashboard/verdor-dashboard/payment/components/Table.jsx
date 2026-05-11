@@ -1,6 +1,10 @@
-import { BadgeRussianRuble } from "lucide-react";
+import { BadgeRussianRuble, Eye } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Table = ({ paymentData }) => {
+    const showInvoice = (url) => {
+        window.open(url);
+    };
     return (
         <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -13,6 +17,7 @@ const Table = ({ paymentData }) => {
                         <th className="px-6 py-4 text-base font-semibold text-primary">Amount</th>
                         <th className="px-6 py-4 text-base font-semibold text-primary">Provider</th>
                         <th className="px-6 py-4 text-base font-semibold text-primary">Date</th>
+                        <th className="px-6 py-4 text-base font-semibold text-primary">Invoice</th>
                     </tr>
                 </thead>
 
@@ -69,6 +74,9 @@ const Table = ({ paymentData }) => {
                                 </td>
                                 <td className="px-6 py-4 text-sm font-semibold text-[#525252]">
                                     {new Date(item?.createdAt).toLocaleDateString('en-GB')}
+                                </td>
+                                <td onClick={() => showInvoice(item?.invoice_url)} className="px-6 py-4 text-sm cursor-pointer font-semibold text-[#525252] hover:text-[#4CAF50]">
+                                    <Eye />
                                 </td>
                             </tr>
                         ))
